@@ -1,28 +1,38 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #drawer
-    class="sidenav"
-    fixedInViewport="true"
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="!(isHandset$ | async)">
-    <mat-toolbar color="primary">Menu</mat-toolbar>
-    <mat-tree>
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="true" [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+        [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)">
+        <mat-toolbar color="primary">Menu</mat-toolbar>
+
+        <mat-tree [dataSource]="classifications"
+            [treeControl]="treeControl">
+            <mat-nested-tree-node *matTreeNodeDef="let node">
+                <a mat-button color="primary" type="button"
+                    (click)="treeControl.toggle(node)"
+                    [href]="node.link || 'javascript:void(0);'">
+                    <mat-icon
+                        [style.visibility]="node.children?.length ? 'visible' : 'hidden'">
+                        {{
+                            treeControl.isExpanded(node) ? 
+                            'expand_more' : 'chevron_right'
+                        }}
+                    </mat-icon>
+                    {{node.name}}
+                </a>
+
+                <ng-container matTreeNodeOutlet 
+                    *ngIf="treeControl.isExpanded(node)">
+                </ng-container>
+            </mat-nested-tree-node>
+        </mat-tree>
         
-    </mat-tree>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-      <span>Application Title</span>
-    </mat-toolbar>
-    <main-dash></main-dash>
-  </mat-sidenav-content>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar color="primary">
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <span>Application Title</span>
+        </mat-toolbar>
+        <main-dash></main-dash>
+    </mat-sidenav-content>
 </mat-sidenav-container>
